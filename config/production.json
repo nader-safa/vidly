@@ -1,0 +1,10 @@
+{
+  "name": "Vidly - Production",
+  "env": "production",
+  "port": 5000,
+  "db": {
+    "user": "vidlyUser",
+    "cluster": "vidlycluster.sehnujl.mongodb.net",
+    "database": "dev"
+  }
+}

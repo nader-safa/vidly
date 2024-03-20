@@ -1,0 +1,9 @@
+{
+  "name": "Vidly - Default",
+  "port": 3030,
+  "db": {
+    "user": "vidlyUser",
+    "cluster": "vidlycluster.sehnujl.mongodb.net",
+    "database": "dev"
+  }
+}

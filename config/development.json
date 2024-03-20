@@ -1,0 +1,10 @@
+{
+  "name": "Vidly - Development",
+  "env": "development",
+  "port": 8080,
+  "db": {
+    "user": "vidlyUser",
+    "cluster": "vidlycluster.sehnujl.mongodb.net",
+    "database": "dev"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "db": {
+    "dev_password": "vidly_dev_db_password",
+    "prod_password": "vidly_dev_db_password"
+  }
+}
