@@ -151,4 +151,10 @@ const deleteRental = async (req, res) => {
   }
 }
 
-export { createRental, getRentals, getRental, updateRental, deleteRental }
+export default {
+  createRental,
+  getRentals,
+  getRental,
+  updateRental,
+  deleteRental,
+}
