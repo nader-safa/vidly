@@ -5,9 +5,11 @@ import morgan from 'morgan'
 import helmet from 'helmet'
 import debug from 'debug'
 
+import allowCORS from './src/middlewares/allowCORS.middleware.js'
+
 import genreRouter from './src/routes/genre.router.js'
 import customerRouter from './src/routes/customer.router.js'
-import allowCORS from './src/middlewares/allowCORS.middleware.js'
+import movieRouter from './src/routes/movie.router.js'
 
 const app = express()
 
@@ -21,7 +23,7 @@ const startupDebug = debug('vidly:startup')
 Mongoose.connect(
   `mongodb+srv://${config.get('db.user')}:${config.get(
     config.get('env') === 'production' ? 'db.prod_password' : 'db.dev_password'
-  )}@${config.get('db.cluster')}/@${config.get(
+  )}@${config.get('db.cluster')}/${config.get(
     'db.database'
   )}?retryWrites=true&w=majority`
 )
@@ -66,6 +68,7 @@ app.use(allowCORS)
  */
 app.use('/api/genres', genreRouter)
 app.use('/api/customers', customerRouter)
+app.use('/api/movies', movieRouter)
 
 const port = config.get('port') || 3000
 

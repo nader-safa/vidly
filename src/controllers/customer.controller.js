@@ -18,7 +18,9 @@ const createCustomer = async (req, res) => {
 
     const newCustomer = await customerModel.create(req.body)
 
-    res.json({ message: 'Customer created successfully', data: newCustomer })
+    res
+      .status(201)
+      .json({ message: 'Customer created successfully', data: newCustomer })
   } catch (err) {
     serverDebug('error in createCustomer:', err)
     res.status(500).json({ message: 'Internal server error' })
@@ -30,6 +32,7 @@ const getCustomers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
+    const total = await customerModel.countDocuments()
 
     const customers = await customerModel
       .find()
@@ -40,9 +43,9 @@ const getCustomers = async (req, res) => {
     res.json({
       message: 'Customers found',
       data: customers,
-      total: customers.length,
-      limit: limit,
-      page: page,
+      limit,
+      page,
+      total,
     })
   } catch (err) {
     serverDebug('error in getCustomers:', err)
@@ -53,9 +56,8 @@ const getCustomers = async (req, res) => {
 // getCustomer
 const getCustomer = async (req, res) => {
   try {
-    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false) {
-      return res.status(400).json({ message: 'Invalid customer ID' })
-    }
+    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
+      return res.status(400).json({ message: 'Invalid customer id' })
 
     const customer = await customerModel.findById(req.params.id)
 
@@ -72,9 +74,8 @@ const getCustomer = async (req, res) => {
 // updateCustomer
 const updateCustomer = async (req, res) => {
   try {
-    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false) {
-      return res.status(400).json({ message: 'Invalid customer ID' })
-    }
+    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
+      return res.status(400).json({ message: 'Invalid customer id' })
 
     const { error } = customerSchema.validate(req.body)
 
@@ -100,16 +101,17 @@ const updateCustomer = async (req, res) => {
 // deleteCustomer
 const deleteCustomer = async (req, res) => {
   try {
-    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false) {
-      return res.status(400).json({ message: 'Invalid customer ID' })
-    }
+    if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
+      return res.status(400).json({ message: 'Invalid customer id' })
 
     const customer = await customerModel.findByIdAndDelete(req.params.id)
 
     if (!customer)
-      return res.status(404).json({ message: 'Customer not found' })
+      return res
+        .status(404)
+        .json({ message: 'No customer found with the given id' })
 
-    res.json({ message: 'Customer deleted successfully' })
+    res.json({ message: 'Customer deleted successfully', data: customer })
   } catch (err) {
     serverDebug('error in deleteCustomer:', err)
     res.status(500).json({ message: 'Internal server error' })

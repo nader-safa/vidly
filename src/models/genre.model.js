@@ -17,42 +17,33 @@ import Joi from 'joi'
 // - get: function called when the field is accessed to manipulate it
 // - set: function called when the field is set to manipulate it
 
-export default Mongoose.model(
-  'Genre',
-  new Mongoose.Schema({
-    name: {
-      type: String,
-      required: true,
-      minLength: 5,
-      maxLength: 50,
-      trim: true,
-    },
-    dateCreated: {
-      type: Date,
-      default: Date.now,
-    },
-    dateModified: {
-      type: Date,
-      default: Date.now,
-    },
-    isPublished: {
-      type: Boolean,
-      default: false,
-    },
-    price: {
-      type: Number,
-      min: 0,
-      required: function () {
-        return this.isPublished
-      },
-    },
-  })
-)
+export const genreSchema = new Mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minLength: 5,
+    maxLength: 50,
+    trim: true,
+  },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+  dateModified: {
+    type: Date,
+    default: Date.now,
+  },
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-export const genreSchema = Joi.object({
+export default Mongoose.model('Genre', genreSchema)
+
+export const genreJoiSchema = Joi.object({
   name: Joi.string().min(5).max(50).required(),
   dateCreated: Joi.date(),
   dateModified: Joi.date(),
   isPublished: Joi.boolean(),
-  price: Joi.number().min(0),
 })

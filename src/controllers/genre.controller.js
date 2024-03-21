@@ -1,14 +1,14 @@
 import debug from 'debug'
 import mongoose from 'mongoose'
 
-import genreModel, { genreSchema } from '../models/genre.model.js'
+import genreModel, { genreJoiSchema } from '../models/genre.model.js'
 
 const serverDebug = debug('vidly:server')
 
 // createGenre
 const createGenre = async (req, res) => {
   try {
-    const { error } = genreSchema.validate(req.body)
+    const { error } = genreJoiSchema.validate(req.body)
 
     if (error)
       return res.status(400).json({ message: error.details[0].message })
@@ -48,20 +48,22 @@ const getGenres = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
+    const total = await genreModel.countDocuments()
+
     const genres = await genreModel
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
       .select({ name: 1, _id: 1 })
-    // .count()
+
     if (!genres) return res.status(404).json({ message: 'No genres found' })
 
     res.json({
       message: 'Genres found',
       data: genres,
-      page,
       limit,
-      total: genres.length,
+      page,
+      total,
     })
   } catch (err) {
     serverDebug('error in getGenres:', err)
@@ -106,7 +108,7 @@ const updateGenre = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id))
       return res.status(400).json({ message: 'Invalid genre id' })
 
-    const { error } = genreSchema.validate(req.body)
+    const { error } = genreJoiSchema.validate(req.body)
 
     if (error)
       return res.status(400).json({ message: error.details[0].message })
