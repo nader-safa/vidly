@@ -28,7 +28,7 @@ Mongoose.connect(
     startupDebug('connected to database')
   })
   .catch((err) => {
-    startupDebug(err)
+    startupDebug('error connecting to database:', err)
   })
 
 // Parses JSON in the request body and populates `req.body` with the parsed object.
