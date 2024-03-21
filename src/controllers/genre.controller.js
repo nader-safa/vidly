@@ -1,14 +1,9 @@
-import genreModel from '../models/genre.model.js'
-import Joi from 'joi'
 import debug from 'debug'
 import mongoose from 'mongoose'
 
-const serverDebug = debug('vidly:server')
+import genreModel, { genreSchema } from '../models/genre.model.js'
 
-// Joi validation
-const genreSchema = Joi.object({
-  name: Joi.string().min(5).max(50).required(),
-})
+const serverDebug = debug('vidly:server')
 
 // createGenre
 const createGenre = async (req, res) => {

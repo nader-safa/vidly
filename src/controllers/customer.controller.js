@@ -1,15 +1,7 @@
 import Mongoose from 'mongoose'
-import Joi from 'joi'
 import debug from 'debug'
 
-import customerModel from '../models/customer.model.js'
-
-// Joi validation
-const customerSchema = Joi.object({
-  name: Joi.string().min(5).max(50).required(),
-  isGold: Joi.boolean(),
-  phone: Joi.string().min(5).max(50).required(),
-})
+import customerModel, { customerSchema } from '../models/customer.model.js'
 
 const serverDebug = debug('vidly:server')
 

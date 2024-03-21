@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose'
+import Joi from 'joi'
 
 // Built-in validators in mongoose
 // - required: checks if the field is not empty
@@ -45,17 +46,13 @@ export default Mongoose.model(
         return this.isPublished
       },
     },
-    tags: {
-      type: [String],
-      validate: {
-        // custom validator
-        isAsync: true,
-        validator: function (value, callback) {
-          const result = value && value.length > 0
-          callback(result)
-        },
-        message: 'Genre must have at least one tag',
-      },
-    },
   })
 )
+
+export const genreSchema = Joi.object({
+  name: Joi.string().min(5).max(50).required(),
+  dateCreated: Joi.date(),
+  dateModified: Joi.date(),
+  isPublished: Joi.boolean(),
+  price: Joi.number().min(0),
+})
