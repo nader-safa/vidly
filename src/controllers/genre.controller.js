@@ -1,7 +1,7 @@
 import debug from 'debug'
 import mongoose from 'mongoose'
 
-import genreModel, { genreJoiSchema } from '../models/genre.model.js'
+import Genre, { genreJoiSchema } from '../models/genre.model.js'
 
 const serverDebug = debug('vidly:server')
 
@@ -13,10 +13,10 @@ const createGenre = async (req, res) => {
     if (error)
       return res.status(400).json({ message: error.details[0].message })
 
-    if (await genreModel.exists(req.body))
+    if (await Genre.exists(req.body))
       return res.status(400).json({ message: 'Genre already exists' })
 
-    const newGenre = await genreModel.create(req.body)
+    const newGenre = await Genre.create(req.body)
 
     res.json({ message: 'Genre created successfully', data: newGenre })
   } catch (err) {
@@ -48,10 +48,9 @@ const getGenres = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
-    const total = await genreModel.countDocuments()
+    const total = await Genre.countDocuments()
 
-    const genres = await genreModel
-      .find()
+    const genres = await Genre.find()
       .skip((page - 1) * limit)
       .limit(limit)
       .select({ name: 1, _id: 1 })
@@ -77,7 +76,7 @@ const getGenre = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id))
       return res.status(400).json({ message: 'Invalid genre id' })
 
-    const genre = await genreModel.findOne({ _id: req.params.id })
+    const genre = await Genre.findOne({ _id: req.params.id })
 
     if (!genre)
       return res
@@ -113,7 +112,7 @@ const updateGenre = async (req, res) => {
     if (error)
       return res.status(400).json({ message: error.details[0].message })
 
-    const genre = await genreModel.findByIdAndUpdate(
+    const genre = await Genre.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       {
@@ -139,7 +138,7 @@ const deleteGenre = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id))
       return res.status(400).json({ message: 'Invalid genre id' })
 
-    const genre = await genreModel.findByIdAndDelete(req.params.id)
+    const genre = await Genre.findByIdAndDelete(req.params.id)
 
     if (!genre)
       return res

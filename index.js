@@ -10,6 +10,7 @@ import allowCORS from './src/middlewares/allowCORS.middleware.js'
 import genreRouter from './src/routes/genre.router.js'
 import customerRouter from './src/routes/customer.router.js'
 import movieRouter from './src/routes/movie.router.js'
+import rentalRouter from './src/routes/rental.router.js'
 
 const app = express()
 
@@ -69,6 +70,7 @@ app.use(allowCORS)
 app.use('/api/genres', genreRouter)
 app.use('/api/customers', customerRouter)
 app.use('/api/movies', movieRouter)
+app.use('/api/rentals', rentalRouter)
 
 const port = config.get('port') || 3000
 

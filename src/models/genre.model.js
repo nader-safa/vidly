@@ -1,6 +1,11 @@
 import Mongoose from 'mongoose'
 import Joi from 'joi'
 
+export const genreJoiSchema = Joi.object({
+  name: Joi.string().min(5).max(50).required(),
+  isPublished: Joi.boolean(),
+})
+
 // Built-in validators in mongoose
 // - required: checks if the field is not empty
 // - match: checks if the field matches a certain regex
@@ -28,6 +33,7 @@ export const genreSchema = new Mongoose.Schema({
   dateCreated: {
     type: Date,
     default: Date.now,
+    immutable: true,
   },
   dateModified: {
     type: Date,
@@ -40,10 +46,3 @@ export const genreSchema = new Mongoose.Schema({
 })
 
 export default Mongoose.model('Genre', genreSchema)
-
-export const genreJoiSchema = Joi.object({
-  name: Joi.string().min(5).max(50).required(),
-  dateCreated: Joi.date(),
-  dateModified: Joi.date(),
-  isPublished: Joi.boolean(),
-})

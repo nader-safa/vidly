@@ -1,8 +1,8 @@
 import Mongoose from 'mongoose'
 import debug from 'debug'
 
-import movieModel, { movieJoiSchema } from '../models/movie.model.js'
-import genreModel from '../models/genre.model.js'
+import Movie, { movieJoiSchema } from '../models/movie.model.js'
+import Genre from '../models/genre.model.js'
 
 const serverDebug = debug('vidly:server')
 
@@ -17,14 +17,14 @@ const createMovie = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.body.genreId) === false)
       return res.status(400).json({ message: 'Invalid genre id' })
 
-    const genre = await genreModel.findById(req.body.genreId, 'name _id')
+    const genre = await Genre.findById(req.body.genreId, 'name _id')
 
     if (!genre) return res.status(400).json({ message: 'Genre id not found' })
 
-    if (await movieModel.exists(req.body))
+    if (await Movie.exists(req.body))
       return res.status(400).json({ message: 'Movie already exists' })
 
-    const newMovie = await movieModel.create({
+    const newMovie = await Movie.create({
       title: req.body.title,
       numberInStock: req.body.numberInStock,
       dailyRentalRate: req.body.dailyRentalRate,
@@ -45,10 +45,9 @@ const getMovies = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
-    const total = await movieModel.countDocuments()
+    const total = await Movie.countDocuments()
 
-    const movies = await movieModel
-      .find()
+    const movies = await Movie.find()
       .skip((page - 1) * limit)
       .limit(limit)
 
@@ -71,7 +70,7 @@ const getMovie = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid movie id' })
 
-    const movie = await movieModel.findById(req.params.id)
+    const movie = await Movie.findById(req.params.id)
 
     if (!movie) return res.status(404).json({ message: 'Movie not found' })
 
@@ -88,7 +87,7 @@ const updateMovie = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid movie id' })
 
-    const movie = await movieModel.findById(req.params.id)
+    const movie = await Movie.findById(req.params.id)
 
     if (!movie) return res.status(404).json({ message: 'Movie not found' })
 
@@ -97,7 +96,7 @@ const updateMovie = async (req, res) => {
     if (error)
       return res.status(400).json({ message: error.details[0].message })
 
-    const updatedMovie = await movieModel.findByIdAndUpdate(
+    const updatedMovie = await Movie.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
@@ -116,7 +115,7 @@ const deleteMovie = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid movie id' })
 
-    const movie = await movieModel.findByIdAndDelete(req.params.id)
+    const movie = await Movie.findByIdAndDelete(req.params.id)
 
     if (!movie)
       return res

@@ -1,22 +1,22 @@
 import Mongoose from 'mongoose'
 import debug from 'debug'
 
-import customerModel, { customerSchema } from '../models/customer.model.js'
+import Customer, { customerJoiSchema } from '../models/customer.model.js'
 
 const serverDebug = debug('vidly:server')
 
 // createCustomer
 const createCustomer = async (req, res) => {
   try {
-    const { error } = customerSchema.validate(req.body)
+    const { error } = customerJoiSchema.validate(req.body)
 
     if (error)
       return res.status(400).json({ message: error.details[0].message })
 
-    if (await customerModel.exists(req.body))
+    if (await Customer.exists(req.body))
       return res.status(400).json({ message: 'Customer already exists' })
 
-    const newCustomer = await customerModel.create(req.body)
+    const newCustomer = await Customer.create(req.body)
 
     res
       .status(201)
@@ -32,10 +32,9 @@ const getCustomers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
-    const total = await customerModel.countDocuments()
+    const total = await Customer.countDocuments()
 
-    const customers = await customerModel
-      .find()
+    const customers = await Customer.find()
       .select({ name: 1, _id: 1 })
       .skip((page - 1) * limit)
       .limit(limit)
@@ -59,7 +58,7 @@ const getCustomer = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid customer id' })
 
-    const customer = await customerModel.findById(req.params.id)
+    const customer = await Customer.findById(req.params.id)
 
     if (!customer)
       return res.status(404).json({ message: 'Customer not found' })
@@ -77,16 +76,14 @@ const updateCustomer = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid customer id' })
 
-    const { error } = customerSchema.validate(req.body)
+    const { error } = customerJoiSchema.validate(req.body)
 
     if (error)
       return res.status(400).json({ message: error.details[0].message })
 
-    const customer = await customerModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    )
+    const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
 
     if (!customer)
       return res.status(404).json({ message: 'Customer not found' })
@@ -104,7 +101,7 @@ const deleteCustomer = async (req, res) => {
     if (Mongoose.Types.ObjectId.isValid(req.params.id) === false)
       return res.status(400).json({ message: 'Invalid customer id' })
 
-    const customer = await customerModel.findByIdAndDelete(req.params.id)
+    const customer = await Customer.findByIdAndDelete(req.params.id)
 
     if (!customer)
       return res
