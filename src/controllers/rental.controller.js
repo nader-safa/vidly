@@ -1,7 +1,7 @@
 import Rental, { rentalJoiSchema } from '../models/rental.model.js'
 import Movie from '../models/movie.model.js'
 import Customer from '../models/customer.model.js'
-import Mongoose, { startSession } from 'mongoose'
+import Mongoose from 'mongoose'
 import debug from 'debug'
 
 const serverDebug = debug('vidly:server')
