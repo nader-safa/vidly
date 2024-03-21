@@ -61,7 +61,13 @@ const getGenres = async (req, res) => {
     // .count()
     if (!genres) return res.status(404).json({ message: 'No genres found' })
 
-    res.json({ message: 'Genres found', data: genres, page, limit })
+    res.json({
+      message: 'Genres found',
+      data: genres,
+      page,
+      limit,
+      total: genres.length,
+    })
   } catch (err) {
     serverDebug('error in getGenres:', err)
     res.status(500).json({ message: 'Internal server error' })

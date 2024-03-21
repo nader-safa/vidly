@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import debug from 'debug'
 
 import genreRouter from './src/routes/genre.router.js'
+import customerRouter from './src/routes/customer.router.js'
 import allowCORS from './src/middlewares/allowCORS.middleware.js'
 
 const app = express()
@@ -24,16 +25,12 @@ Mongoose.connect(
     'db.database'
   )}?retryWrites=true&w=majority`
 )
-  .then(() => {
-    startupDebug('connected to database')
-  })
-  .catch((err) => {
-    startupDebug('error connecting to database:', err)
-  })
+  .then(() => startupDebug('connected to database'))
+  .catch((err) => startupDebug('error connecting to database:', err))
 
 // Parses JSON in the request body and populates `req.body` with the parsed object.
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use(helmet())
 
@@ -68,6 +65,7 @@ app.use(allowCORS)
  * @returns {void}
  */
 app.use('/api/genres', genreRouter)
+app.use('/api/customers', customerRouter)
 
 const port = config.get('port') || 3000
 
