@@ -11,6 +11,7 @@ import genreRouter from './src/routes/genre.router.js'
 import customerRouter from './src/routes/customer.router.js'
 import movieRouter from './src/routes/movie.router.js'
 import rentalRouter from './src/routes/rental.router.js'
+import userRouter from './src/routes/user.router.js'
 
 const app = express()
 
@@ -71,6 +72,7 @@ app.use('/api/genres', genreRouter)
 app.use('/api/customers', customerRouter)
 app.use('/api/movies', movieRouter)
 app.use('/api/rentals', rentalRouter)
+app.use('/api/users', userRouter)
 
 const port = config.get('port') || 3000
 

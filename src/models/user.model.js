@@ -4,7 +4,15 @@ import Joi from 'joi'
 export const userJoiSchema = Joi.object({
   name: Joi.string().min(5).max(50).required(),
   email: Joi.string().min(5).max(255).required().email(),
-  password: Joi.string().min(5).max(255).required(),
+  password: Joi.string()
+    .min(8)
+    .max(255)
+    .required()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/
+    )
+    .example('Password123!'),
+  // At least one lowercase letter, one uppercase letter, one digit, and one special character, 8 or more characters long
 })
 
 export const userSchema = new Mongoose.Schema({

@@ -1,0 +1,54 @@
+import _ from 'lodash'
+import debug from 'debug'
+import User, { userJoiSchema } from '../models/user.model.js'
+
+const serverDebug = debug('vidly:server')
+
+// createUser
+const createUser = async (req, res) => {
+  try {
+    const { error } = userJoiSchema.validate(req.body)
+    if (error)
+      return res.status(400).json({ message: error.details[0].message })
+
+    const user = await User.findOne({ email: req.body.email })
+
+    if (user) return res.status(400).json({ message: 'User already exists' })
+
+    const newUser = await User.create(req.body)
+
+    res.status(201).json({
+      message: 'User created successfully',
+      data: _.pick(newUser, ['_id', 'name', 'email']) || newUser,
+    })
+  } catch (err) {
+    serverDebug('error in createUser:', err)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+}
+
+// getUsers
+const getUsers = async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const page = parseInt(req.query.page) || 1
+  const count = await User.countDocuments()
+
+  const users = await User.find()
+    .select('-password')
+    .sort('-dateCreated')
+    .limit(limit)
+    .skip((page - 1) * limit)
+
+  res.json({
+    message: 'Users found',
+    data: users,
+    limit,
+    page,
+    count,
+  })
+}
+
+export default {
+  createUser,
+  getUsers,
+}
