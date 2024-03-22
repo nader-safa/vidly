@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import debug from 'debug'
 import User, { userJoiSchema } from '../models/user.model.js'
+import bcrypt from 'bcrypt'
 
 const serverDebug = debug('vidly:server')
 
@@ -15,12 +16,23 @@ const createUser = async (req, res) => {
 
     if (user) return res.status(400).json({ message: 'User already exists' })
 
-    const newUser = await User.create(req.body)
-
-    res.status(201).json({
-      message: 'User created successfully',
-      data: _.pick(newUser, ['_id', 'name', 'email']) || newUser,
+    const salt = await bcrypt.genSalt()
+    const newUser = await User.create({
+      ...req.body,
+      password: await bcrypt.hash(req.body.password, salt),
     })
+
+    const token = newUser.generateAuthToken()
+
+    res
+      .header('Authorization', `Bearer ${token}`)
+      .header('Access-Control-Expose-Headers', 'Authorization')
+      .header('Access-Control-Allow-Credentials', true)
+      .status(201)
+      .json({
+        message: 'User created successfully',
+        data: _.pick(newUser, ['_id', 'name', 'email']) || newUser,
+      })
   } catch (err) {
     serverDebug('error in createUser:', err)
     res.status(500).json({ message: 'Internal server error' })

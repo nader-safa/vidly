@@ -12,10 +12,16 @@ import customerRouter from './src/routes/customer.router.js'
 import movieRouter from './src/routes/movie.router.js'
 import rentalRouter from './src/routes/rental.router.js'
 import userRouter from './src/routes/user.router.js'
+import authRouter from './src/routes/auth.router.js'
 
 const app = express()
 
 const startupDebug = debug('vidly:startup')
+
+if (!config.get('jwt_secret')) {
+  startupDebug('FATAL ERROR: jwt_secret is not defined.')
+  process.exit(1)
+}
 
 /**
  * Connects to the MongoDB database using the provided configuration.
@@ -73,6 +79,7 @@ app.use('/api/customers', customerRouter)
 app.use('/api/movies', movieRouter)
 app.use('/api/rentals', rentalRouter)
 app.use('/api/users', userRouter)
+app.use('/api/auth', authRouter)
 
 const port = config.get('port') || 3000
 

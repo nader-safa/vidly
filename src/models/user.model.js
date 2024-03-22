@@ -1,5 +1,7 @@
 import Mongoose from 'mongoose'
 import Joi from 'joi'
+import config from 'config'
+import jwt from 'jsonwebtoken'
 
 export const userJoiSchema = Joi.object({
   name: Joi.string().min(5).max(50).required(),
@@ -51,5 +53,17 @@ export const userSchema = new Mongoose.Schema({
     default: Date.now,
   },
 })
+
+/**
+ * Generate authentication token for the user.
+ *
+ * @return {string} The generated authentication token.
+ */
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({ _id: this._id }, config.get('jwt_secret'), {
+    expiresIn: '1d',
+  })
+  return token
+}
 
 export default Mongoose.model('User', userSchema)

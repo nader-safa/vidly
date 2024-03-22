@@ -1,4 +1,5 @@
 {
+  "jwt_secret": "vidly_jwt_secret",
   "db": {
     "dev_password": "vidly_dev_db_password",
     "prod_password": "vidly_dev_db_password"
