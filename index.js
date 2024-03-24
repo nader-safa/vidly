@@ -1,3 +1,4 @@
+import 'express-async-errors'
 import express from 'express'
 import Mongoose from 'mongoose'
 import config from 'config'
@@ -13,6 +14,7 @@ import movieRouter from './src/routes/movie.router.js'
 import rentalRouter from './src/routes/rental.router.js'
 import userRouter from './src/routes/user.router.js'
 import authRouter from './src/routes/auth.router.js'
+import { errorHandler } from './src/middlewares/error.js'
 
 const app = express()
 
@@ -80,6 +82,8 @@ app.use('/api/movies', movieRouter)
 app.use('/api/rentals', rentalRouter)
 app.use('/api/users', userRouter)
 app.use('/api/auth', authRouter)
+
+app.use(errorHandler)
 
 const port = config.get('port') || 3000
 

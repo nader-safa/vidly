@@ -7,22 +7,16 @@ const serverDebug = debug('vidly:server')
 
 // createGenre
 const createGenre = async (req, res) => {
-  try {
-    const { error } = genreJoiSchema.validate(req.body)
+  const { error } = genreJoiSchema.validate(req.body)
 
-    if (error)
-      return res.status(400).json({ message: error.details[0].message })
+  if (error) return res.status(400).json({ message: error.details[0].message })
 
-    if (await Genre.exists(req.body))
-      return res.status(400).json({ message: 'Genre already exists' })
+  if (await Genre.exists(req.body))
+    return res.status(400).json({ message: 'Genre already exists' })
 
-    const newGenre = await Genre.create(req.body)
+  const newGenre = await Genre.create(req.body)
 
-    res.json({ message: 'Genre created successfully', data: newGenre })
-  } catch (err) {
-    serverDebug('error in createGenre:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
+  res.json({ message: 'Genre created successfully', data: newGenre })
 }
 
 // getGenres
@@ -45,49 +39,37 @@ const getGenres = async (req, res) => {
   // - $not: not
   // - $nor: nor
 
-  try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 10
-    const total = await Genre.countDocuments()
+  const page = parseInt(req.query.page) || 1
+  const limit = parseInt(req.query.limit) || 10
+  const total = await Genre.countDocuments()
 
-    const genres = await Genre.find()
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .select({ name: 1, _id: 1 })
+  const genres = await Genre.find()
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .select({ name: 1, _id: 1 })
 
-    if (!genres) return res.status(404).json({ message: 'No genres found' })
+  if (!genres) return res.status(404).json({ message: 'No genres found' })
 
-    res.json({
-      message: 'Genres found',
-      data: genres,
-      limit,
-      page,
-      total,
-    })
-  } catch (err) {
-    serverDebug('error in getGenres:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
+  res.json({
+    message: 'Genres found',
+    data: genres,
+    limit,
+    page,
+    total,
+  })
 }
 
 // getGenre
 const getGenre = async (req, res) => {
-  try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id))
-      return res.status(400).json({ message: 'Invalid genre id' })
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(400).json({ message: 'Invalid genre id' })
 
-    const genre = await Genre.findOne({ _id: req.params.id })
+  const genre = await Genre.findOne({ _id: req.params.id })
 
-    if (!genre)
-      return res
-        .status(404)
-        .json({ message: 'No genre found with the given id' })
+  if (!genre)
+    return res.status(404).json({ message: 'No genre found with the given id' })
 
-    res.json({ message: 'Genre found', data: genre })
-  } catch (err) {
-    serverDebug('error in getGenre:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
+  res.json({ message: 'Genre found', data: genre })
 }
 
 // updateGenre
@@ -103,53 +85,38 @@ const updateGenre = async (req, res) => {
   // - $unset: unset the value of the field.
   // - $currentDate: set the value of the field to the current date
 
-  try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id))
-      return res.status(400).json({ message: 'Invalid genre id' })
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(400).json({ message: 'Invalid genre id' })
 
-    const { error } = genreJoiSchema.validate(req.body)
+  const { error } = genreJoiSchema.validate(req.body)
 
-    if (error)
-      return res.status(400).json({ message: error.details[0].message })
+  if (error) return res.status(400).json({ message: error.details[0].message })
 
-    const genre = await Genre.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      {
-        new: true, // return the updated document
-      }
-    )
+  const genre = await Genre.findByIdAndUpdate(
+    req.params.id,
+    { $set: req.body },
+    {
+      new: true, // return the updated document
+    }
+  )
 
-    if (!genre)
-      return res
-        .status(404)
-        .json({ message: 'No genre found with the given id' })
+  if (!genre)
+    return res.status(404).json({ message: 'No genre found with the given id' })
 
-    res.json({ message: 'Genre updated successfully', data: genre })
-  } catch (err) {
-    serverDebug('error in updateGenre:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
+  res.json({ message: 'Genre updated successfully', data: genre })
 }
 
 // deleteGenre
 const deleteGenre = async (req, res) => {
-  try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id))
-      return res.status(400).json({ message: 'Invalid genre id' })
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(400).json({ message: 'Invalid genre id' })
 
-    const genre = await Genre.findByIdAndDelete(req.params.id)
+  const genre = await Genre.findByIdAndDelete(req.params.id)
 
-    if (!genre)
-      return res
-        .status(404)
-        .json({ message: 'No genre found with the given id' })
+  if (!genre)
+    return res.status(404).json({ message: 'No genre found with the given id' })
 
-    res.json({ message: 'Genre deleted successfully', data: genre })
-  } catch (err) {
-    serverDebug('error in deleteGenre:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
+  res.json({ message: 'Genre deleted successfully', data: genre })
 }
 
 export default { createGenre, getGenres, getGenre, updateGenre, deleteGenre }

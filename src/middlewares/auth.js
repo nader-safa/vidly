@@ -24,10 +24,19 @@ export const adminProtected = async (req, res, next) => {
     if (!req.user.isAdmin) throw new Error()
     next()
   } catch (err) {
-    res
-      .status(403)
-      .json({
-        error: 'Access denied. You are not allowed to perform this action',
-      })
+    res.status(403).json({
+      error: 'Access denied. You are not allowed to perform this action',
+    })
+  }
+}
+
+export const userProtected = async (req, res, next) => {
+  try {
+    if (req.user._id !== req.params.id && !req.user.isAdmin) throw new Error()
+    next()
+  } catch (err) {
+    res.status(403).json({
+      error: 'Access denied. You are not allowed to perform this action',
+    })
   }
 }

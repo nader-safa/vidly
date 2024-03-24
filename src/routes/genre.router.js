@@ -7,7 +7,7 @@ const router = express.Router()
 router.get('/', genreController.getGenres)
 router.get('/:id', genreController.getGenre)
 router.post('/', [auth, adminProtected], genreController.createGenre)
-router.put('/:id', genreController.updateGenre)
-router.delete('/:id', genreController.deleteGenre)
+router.put('/:id', [auth, adminProtected], genreController.updateGenre)
+router.delete('/:id', [auth, adminProtected], genreController.deleteGenre)
 
 export default router

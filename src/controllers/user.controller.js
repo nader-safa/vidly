@@ -7,36 +7,30 @@ const serverDebug = debug('vidly:server')
 
 // createUser
 const createUser = async (req, res) => {
-  try {
-    const { error } = userJoiSchema.validate(req.body)
-    if (error)
-      return res.status(400).json({ message: error.details[0].message })
+  const { error } = userJoiSchema.validate(req.body)
+  if (error) return res.status(400).json({ message: error.details[0].message })
 
-    const user = await User.findOne({ email: req.body.email })
+  const user = await User.findOne({ email: req.body.email })
 
-    if (user) return res.status(400).json({ message: 'User already exists' })
+  if (user) return res.status(400).json({ message: 'User already exists' })
 
-    const salt = await bcrypt.genSalt()
-    const newUser = await User.create({
-      ...req.body,
-      password: await bcrypt.hash(req.body.password, salt),
+  const salt = await bcrypt.genSalt()
+  const newUser = await User.create({
+    ...req.body,
+    password: await bcrypt.hash(req.body.password, salt),
+  })
+
+  const token = newUser.generateAuthToken()
+
+  res
+    .header('Authorization', `Bearer ${token}`)
+    // .header('Access-Control-Expose-Headers', 'Authorization')
+    // .header('Access-Control-Allow-Credentials', true)
+    .status(201)
+    .json({
+      message: 'User created successfully',
+      data: _.pick(newUser, ['_id', 'name', 'email']) || newUser,
     })
-
-    const token = newUser.generateAuthToken()
-
-    res
-      .header('Authorization', `Bearer ${token}`)
-      // .header('Access-Control-Expose-Headers', 'Authorization')
-      // .header('Access-Control-Allow-Credentials', true)
-      .status(201)
-      .json({
-        message: 'User created successfully',
-        data: _.pick(newUser, ['_id', 'name', 'email']) || newUser,
-      })
-  } catch (err) {
-    serverDebug('error in createUser:', err)
-    res.status(500).json({ message: 'Internal server error' })
-  }
 }
 
 // getUsers
