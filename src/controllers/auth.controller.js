@@ -56,14 +56,14 @@ const loginUser = async (req, res) => {
     const token = user.generateAuthToken()
 
     res
-      .cookie('token', token, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-      })
+      // .cookie('token', token, {
+      //   httpOnly: true,
+      //   sameSite: 'none',
+      //   secure: true,
+      // })
       .header('Authorization', `Bearer ${token}`)
-      .header('Access-Control-Expose-Headers', 'Authorization')
-      .header('Access-Control-Allow-Credentials', true)
+      // .header('Access-Control-Expose-Headers', 'Authorization')
+      // .header('Access-Control-Allow-Credentials', true)
       .status(200)
       .json({ message: 'User logged in successfully' })
   } catch (err) {
@@ -72,7 +72,27 @@ const loginUser = async (req, res) => {
   }
 }
 
+/**
+ * Asynchronous function to retrieve user information.
+ *
+ * @param {Object} req - the request object
+ * @param {Object} res - the response object
+ * @return {Promise} a Promise that resolves to user information or an error message
+ */
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password -isAdmin')
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    res.json({ message: 'User found', data: user })
+  } catch (err) {
+    serverDebug('error in getMe:', err)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+}
+
 export default {
   registerUser,
   loginUser,
+  getMe,
 }

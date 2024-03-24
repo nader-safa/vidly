@@ -26,8 +26,8 @@ const createUser = async (req, res) => {
 
     res
       .header('Authorization', `Bearer ${token}`)
-      .header('Access-Control-Expose-Headers', 'Authorization')
-      .header('Access-Control-Allow-Credentials', true)
+      // .header('Access-Control-Expose-Headers', 'Authorization')
+      // .header('Access-Control-Allow-Credentials', true)
       .status(201)
       .json({
         message: 'User created successfully',

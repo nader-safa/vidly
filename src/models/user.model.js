@@ -60,9 +60,13 @@ export const userSchema = new Mongoose.Schema({
  * @return {string} The generated authentication token.
  */
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, config.get('jwt_secret'), {
-    expiresIn: '1d',
-  })
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    config.get('jwt_secret'),
+    {
+      expiresIn: '1d',
+    }
+  )
   return token
 }
 
