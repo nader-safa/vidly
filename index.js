@@ -5,6 +5,7 @@ import config from 'config'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import debug from 'debug'
+import winston from 'winston'
 
 import allowCORS from './src/middlewares/allowCORS.middleware.js'
 
@@ -19,6 +20,14 @@ import { errorHandler } from './src/middlewares/error.js'
 const app = express()
 
 const startupDebug = debug('vidly:startup')
+
+winston.add(
+  new winston.transports.File({
+    filename: 'logfile.log',
+    handleExceptions: true,
+    handleRejections: true,
+  })
+)
 
 if (!config.get('jwt_secret')) {
   startupDebug('FATAL ERROR: jwt_secret is not defined.')
