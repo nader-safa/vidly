@@ -2,9 +2,6 @@ import Rental, { rentalJoiSchema } from '../models/rental.model.js'
 import Movie from '../models/movie.model.js'
 import Customer from '../models/customer.model.js'
 import Mongoose from 'mongoose'
-import debug from 'debug'
-
-const serverDebug = debug('vidly:server')
 
 // createRental
 const createRental = async (req, res) => {
@@ -45,8 +42,7 @@ const createRental = async (req, res) => {
       .json({ message: 'Rental created successfully', data: rental })
   } catch (err) {
     await session.abortTransaction()
-    serverDebug('error in createRental transaction:', err)
-    throw new Error('Internal server error')
+    throw new Error('Error creating rental ACID transaction', err)
   } finally {
     session.endSession()
   }

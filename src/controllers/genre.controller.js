@@ -1,9 +1,6 @@
-import debug from 'debug'
 import mongoose from 'mongoose'
 
 import Genre, { genreJoiSchema } from '../models/genre.model.js'
-
-const serverDebug = debug('vidly:server')
 
 // createGenre
 const createGenre = async (req, res) => {
@@ -42,7 +39,6 @@ const getGenres = async (req, res) => {
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 10
   const total = await Genre.countDocuments()
-
   const genres = await Genre.find()
     .skip((page - 1) * limit)
     .limit(limit)

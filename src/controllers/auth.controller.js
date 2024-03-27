@@ -1,11 +1,8 @@
 import Joi from 'joi'
-import debug from 'debug'
 import bcrypt from 'bcrypt'
 import _ from 'lodash'
 
 import User from '../models/user.model.js'
-
-const serverDebug = debug('vidly:server')
 
 const userJoiSchema = Joi.object({
   email: Joi.string().min(5).max(255).required().email(),

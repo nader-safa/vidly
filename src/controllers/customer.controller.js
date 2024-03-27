@@ -1,9 +1,6 @@
 import Mongoose from 'mongoose'
-import debug from 'debug'
 
 import Customer, { customerJoiSchema } from '../models/customer.model.js'
-
-const serverDebug = debug('vidly:server')
 
 // createCustomer
 const createCustomer = async (req, res) => {

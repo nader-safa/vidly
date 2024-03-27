@@ -1,9 +1,6 @@
 import _ from 'lodash'
-import debug from 'debug'
 import User, { userJoiSchema } from '../models/user.model.js'
 import bcrypt from 'bcrypt'
-
-const serverDebug = debug('vidly:server')
 
 // createUser
 const createUser = async (req, res) => {

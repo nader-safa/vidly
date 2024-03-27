@@ -1,10 +1,7 @@
 import Mongoose from 'mongoose'
-import debug from 'debug'
 
 import Movie, { movieJoiSchema } from '../models/movie.model.js'
 import Genre from '../models/genre.model.js'
-
-const serverDebug = debug('vidly:server')
 
 // createMovie
 const createMovie = async (req, res) => {

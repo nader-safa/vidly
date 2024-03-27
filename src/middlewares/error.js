@@ -1,7 +1,4 @@
-import debug from 'debug'
 import winston from 'winston'
-
-const serverDebug = debug('vidly:server')
 
 /**
  * Error handler middleware.
@@ -13,12 +10,9 @@ const serverDebug = debug('vidly:server')
  * @param {Function} next - The next function
  * @return {Object} - The JSON response object with error message and status
  */
-export const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   // Log the error message
   winston.error(err.message, err)
-
-  // Debug the error message
-  serverDebug(err.message)
 
   // Send a 500 status response with the error message
   res.status(500).json({
@@ -26,3 +20,5 @@ export const errorHandler = (err, req, res, next) => {
     message: 'Internal server error',
   })
 }
+
+export default errorHandler
